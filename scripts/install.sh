@@ -7,6 +7,7 @@ REPO="chainctl"
 BIN_NAME="chainctl"
 INSTALL_DIR="${INSTALL_DIR:-/usr/local/bin}"
 VERSION="latest"
+ASSET_VERSION=""
 
 usage() {
   cat <<EOF
@@ -94,13 +95,15 @@ if [ "$VERSION" = "latest" ]; then
   fi
 fi
 
+ASSET_VERSION="${VERSION#v}"
+
 archive_ext="tar.gz"
 if [ "$os" = "windows" ]; then
   archive_ext="zip"
   need_cmd unzip
 fi
 
-archive_name="${BIN_NAME}_${VERSION}_${os}_${arch}.${archive_ext}"
+archive_name="${BIN_NAME}_${ASSET_VERSION}_${os}_${arch}.${archive_ext}"
 checksums_name="checksums.txt"
 base_url="https://github.com/$OWNER/$REPO/releases/download/$VERSION"
 
