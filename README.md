@@ -10,20 +10,49 @@ CLI in Go per interagire con nodi EVM, Quorum e Besu.
 - chiamare o inviare transazioni a smart contract via ABI
 - gestire operazioni sui validator tramite RPC
 
-## Requisiti
-
-- Go `1.24+` per build ed esecuzione via sorgente
-- accesso a un endpoint JSON-RPC EVM compatibile
-
 ## Installazione
 
-Compilazione locale:
+### Binari Precompilati
+
+Se nel repository sono presenti binari nelle GitHub Releases:
+
+1. apri la pagina `Releases`
+2. scarica l'archivio corretto per il tuo sistema operativo
+3. estrai il binario `chainctl`
+4. rendilo eseguibile
+5. spostalo in una directory presente nel `PATH`
+
+Esempio Linux/macOS:
+
+```bash
+chmod +x chainctl
+sudo mv chainctl /usr/local/bin/
+chainctl --help
+```
+
+### Installazione Con Script
+
+Se il progetto espone uno script di installazione, puoi usare:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/<owner>/<repo>/main/scripts/install.sh | sh
+```
+
+Per installare una versione specifica:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/<owner>/<repo>/main/scripts/install.sh | sh -s -- --version v0.0.1
+```
+
+### Installazione Da Sorgente
+
+Se preferisci compilare localmente:
 
 ```bash
 go build -o chainctl .
 ```
 
-Esecuzione diretta senza build esplicita:
+Oppure esecuzione diretta:
 
 ```bash
 go run . --help
@@ -36,15 +65,15 @@ go run . --help
 3. Verifica la connessione al nodo:
 
 ```bash
-./chainctl status
+chainctl status
 ```
 
 4. Scopri i parametri disponibili:
 
 ```bash
-./chainctl --help
-./chainctl send-eth --help
-./chainctl contract call --help
+chainctl --help
+chainctl send-eth --help
+chainctl contract call --help
 ```
 
 ## Come Scoprire Gli Input Da CLI
@@ -54,7 +83,7 @@ Per capire cosa puoi passare da riga di comando usa sempre `--help`.
 Help globale:
 
 ```bash
-./chainctl --help
+chainctl --help
 ```
 
 Mostra:
@@ -66,25 +95,25 @@ Mostra:
 Help di un comando specifico:
 
 ```bash
-./chainctl <comando> --help
+chainctl <comando> --help
 ```
 
 Esempi:
 
 ```bash
-./chainctl balance --help
-./chainctl send-eth --help
-./chainctl contract --help
-./chainctl contract call --help
-./chainctl contract send --help
-./chainctl validator --help
-./chainctl validator propose-add --help
+chainctl balance --help
+chainctl send-eth --help
+chainctl contract --help
+chainctl contract call --help
+chainctl contract send --help
+chainctl validator --help
+chainctl validator propose-add --help
 ```
 
 Regola pratica:
 
-- usa `./chainctl --help` per vedere i parametri globali
-- usa `./chainctl <comando> --help` per vedere gli input obbligatori e opzionali del comando
+- usa `chainctl --help` per vedere i parametri globali
+- usa `chainctl <comando> --help` per vedere gli input obbligatori e opzionali del comando
 
 ## Configurazione
 
@@ -177,18 +206,6 @@ Questi flag sono disponibili su tutti i comandi:
 --validator-propose-method
 ```
 
-In pratica:
-
-- `--config` sceglie un file YAML specifico
-- `--rpc-url` sovrascrive l'endpoint RPC
-- `--chain-id` sovrascrive il chain ID
-- `--from-address` imposta l'address mittente atteso
-- `--private-key` passa la chiave direttamente da CLI
-- `--private-key-env` indica il nome della variabile ambiente contenente la chiave
-- `--timeout-seconds` cambia il timeout RPC
-- `--poll-interval-seconds` cambia il polling delle operazioni periodiche
-- `--validator-list-method` e `--validator-propose-method` permettono di adattarsi a RPC custom
-
 ## Comandi Disponibili
 
 ### `status`
@@ -202,81 +219,57 @@ Mostra lo stato base del nodo:
 Uso:
 
 ```bash
-./chainctl status
+chainctl status
 ```
 
 ### `balance [address]`
 
 Legge il balance di un address.
 
-Input:
-
-- argomento obbligatorio: `address`
-
 Uso:
 
 ```bash
-./chainctl balance 0x1111111111111111111111111111111111111111
+chainctl balance 0x1111111111111111111111111111111111111111
 ```
 
 ### `tx [hash]`
 
 Mostra i dati base di una transazione.
 
-Input:
-
-- argomento obbligatorio: `hash`
-
 Uso:
 
 ```bash
-./chainctl tx 0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+chainctl tx 0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ```
 
 ### `receipt [hash]`
 
 Mostra la receipt di una transazione.
 
-Input:
-
-- argomento obbligatorio: `hash`
-
 Uso:
 
 ```bash
-./chainctl receipt 0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+chainctl receipt 0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 ```
 
 ### `wait-tx [hash]`
 
 Attende finché una transazione non viene minata.
 
-Input:
-
-- argomento obbligatorio: `hash`
-- flag opzionale: `--timeout`
-
 Uso:
 
 ```bash
-./chainctl wait-tx 0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa --timeout 180
+chainctl wait-tx 0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa --timeout 180
 ```
 
 ### `send-eth`
 
 Invia una transazione ETH semplice.
 
-Input:
-
-- flag obbligatorio: `--to`
-- flag obbligatorio: `--value`
-- flag opzionale: `--gas-limit`
-- richiede anche configurazione RPC e una chiave privata valida
-
 Uso con `.env`:
 
 ```bash
-./chainctl send-eth \
+chainctl send-eth \
   --rpc-url http://127.0.0.1:8545 \
   --from-address 0x0000000000000000000000000000000000000000 \
   --to 0x1111111111111111111111111111111111111111 \
@@ -286,7 +279,7 @@ Uso con `.env`:
 Uso tutto da CLI:
 
 ```bash
-./chainctl send-eth \
+chainctl send-eth \
   --rpc-url http://127.0.0.1:8545 \
   --chain-id 1337 \
   --from-address 0x0000000000000000000000000000000000000000 \
@@ -299,17 +292,10 @@ Uso tutto da CLI:
 
 Chiama una funzione read-only di un contratto usando un ABI JSON.
 
-Input:
-
-- flag obbligatorio: `--abi`
-- flag obbligatorio: `--address`
-- flag obbligatorio: `--method`
-- flag opzionale: `--args`
-
 Uso:
 
 ```bash
-./chainctl contract call \
+chainctl contract call \
   --abi ./MyContract.abi.json \
   --address 0x2222222222222222222222222222222222222222 \
   --method balanceOf \
@@ -322,20 +308,10 @@ Nota: `--args` usa il formato Cobra `--args a,b,c`.
 
 Invia una transazione a una funzione write di un contratto.
 
-Input:
-
-- flag obbligatorio: `--abi`
-- flag obbligatorio: `--address`
-- flag obbligatorio: `--method`
-- flag opzionale: `--args`
-- flag opzionale: `--value`
-- flag opzionale: `--gas-limit`
-- richiede anche configurazione RPC e una chiave privata valida
-
 Uso:
 
 ```bash
-./chainctl contract send \
+chainctl contract send \
   --abi ./MyContract.abi.json \
   --address 0x2222222222222222222222222222222222222222 \
   --method transfer \
@@ -350,35 +326,27 @@ Lista i validator correnti usando il metodo RPC configurato.
 Uso:
 
 ```bash
-./chainctl validator list
+chainctl validator list
 ```
 
 ### `validator propose-add [address]`
 
 Propone l'aggiunta di un validator.
 
-Input:
-
-- argomento obbligatorio: `address`
-
 Uso:
 
 ```bash
-./chainctl validator propose-add 0x4444444444444444444444444444444444444444
+chainctl validator propose-add 0x4444444444444444444444444444444444444444
 ```
 
 ### `validator propose-remove [address]`
 
 Propone la rimozione di un validator.
 
-Input:
-
-- argomento obbligatorio: `address`
-
 Uso:
 
 ```bash
-./chainctl validator propose-remove 0x4444444444444444444444444444444444444444
+chainctl validator propose-remove 0x4444444444444444444444444444444444444444
 ```
 
 ## Esempi Di Override
@@ -386,7 +354,7 @@ Uso:
 Usare un file di config ma sovrascrivere l'endpoint RPC da riga di comando:
 
 ```bash
-./chainctl status --config ./config.yaml --rpc-url http://127.0.0.1:20000
+chainctl status --config ./config.yaml --rpc-url http://127.0.0.1:20000
 ```
 
 Usare solo variabili d'ambiente:
@@ -394,14 +362,14 @@ Usare solo variabili d'ambiente:
 ```bash
 export CHAINCTL_RPC_URL=http://127.0.0.1:8545
 export CHAINCTL_CHAIN_ID=1337
-./chainctl status
+chainctl status
 ```
 
 Usare un nome custom per la variabile contenente la private key:
 
 ```bash
 export MY_NODE_PK=0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-./chainctl send-eth \
+chainctl send-eth \
   --private-key-env MY_NODE_PK \
   --rpc-url http://127.0.0.1:8545 \
   --from-address 0x0000000000000000000000000000000000000000 \
@@ -434,10 +402,3 @@ Errore RPC:
 - verifica `rpc_url`
 - controlla che il nodo sia raggiungibile
 - se serve, aumenta `--timeout-seconds`
-
-## File Utili Nel Repository
-
-- [README.md](/home/alessandro/personalProject/chainctl/README.md:1)
-- [config.example.yaml](/home/alessandro/personalProject/chainctl/config.example.yaml:1)
-- [.env.example](/home/alessandro/personalProject/chainctl/.env.example:1)
-- [cmd/root.go](/home/alessandro/personalProject/chainctl/cmd/root.go:27)
