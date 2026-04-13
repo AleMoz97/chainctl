@@ -1,0 +1,10 @@
+rpc_url: "http://127.0.0.1:8545"
+chain_id: 1337
+from_address: "0x0000000000000000000000000000000000000000"
+private_key: ""
+private_key_env: "CHAINCTL_PRIVATE_KEY"
+timeout_seconds: 10
+poll_interval_seconds: 3
+validator:
+  list_method: "qbft_getValidatorsByBlockNumber"
+  propose_method: "clique_propose"
