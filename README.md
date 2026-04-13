@@ -74,6 +74,7 @@ chainctl status
 chainctl --help
 chainctl send-eth --help
 chainctl contract call --help
+chainctl --version
 ```
 
 ## Come Scoprire Gli Input Da CLI
@@ -114,6 +115,7 @@ Regola pratica:
 
 - usa `chainctl --help` per vedere i parametri globali
 - usa `chainctl <comando> --help` per vedere gli input obbligatori e opzionali del comando
+- usa `chainctl --version` oppure `chainctl version` per vedere la versione installata
 
 ## Configurazione
 

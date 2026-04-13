@@ -12,6 +12,8 @@ builds:
     binary: chainctl
     env:
       - CGO_ENABLED=0
+    ldflags:
+      - -s -w -X chainctl/internal/version.Value={{ .Version }}
     goos:
       - linux
       - darwin
